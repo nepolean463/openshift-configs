@@ -1,0 +1,15 @@
+# --- Namespace network-ingress-test1 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: network-ingress-test1
+  labels:
+    name: network-ingress-test1
+---
+# --- Namespace network-ingress-test2 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: network-ingress-test2
+  labels:
+    name: network-ingress-test2
