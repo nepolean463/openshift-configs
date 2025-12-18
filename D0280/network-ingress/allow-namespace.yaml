@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-network-ingress-test2
+  namespace: network-ingress-test1
+spec:
+  podSelector: {} # {} means apply to ALL pods in the network-ingress-test1
+  policyTypes:
+  - Ingress
+  ingress:
+    - from:
+      - namespaceSelector:
+          matchLabels:
+            name: network-ingress-test2
