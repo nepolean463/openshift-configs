@@ -4,7 +4,9 @@ metadata:
   name: test-apps
   # This must be the namespace where ArgoCD is installed 
   # (usually 'openshift-gitops' or 'argocd')
-  namespace: openshift-gitops 
+  namespace: openshift-gitops
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
