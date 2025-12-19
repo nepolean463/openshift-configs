@@ -18,6 +18,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: network-ingress-tes3
+  name: network-ingress-test3
   labels: 
     name: network-ingress-test3
