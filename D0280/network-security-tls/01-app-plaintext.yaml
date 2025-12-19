@@ -14,7 +14,8 @@ spec:
         app: plain-app
     spec:
       containers:
-        - name: quay.io/redhattraining/hello-world-nginx
+        - name: nginx
+          image: quay.io/redhattraining/hello-world-nginx
           ports:
             - containerPort: 8080
 ---
@@ -29,5 +30,3 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-
-
