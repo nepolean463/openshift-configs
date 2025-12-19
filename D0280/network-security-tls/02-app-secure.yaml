@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: quay.io/redhattraining/nginx
+          image: quay.io/redhattraining/hello-world-nginx
           ports:
             - containerPort: 8443
           volumeMounts:
