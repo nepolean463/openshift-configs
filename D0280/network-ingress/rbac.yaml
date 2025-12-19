@@ -35,7 +35,7 @@ metadata:
   name: developer-admin-binding
   namespace: network-ingress-test3
 rolRef:
-  apiGroup:
+  apiGroup: rbac.authorization.k8s.io
     apiGroup: ClusterRole
     name: admin
 subjects:
