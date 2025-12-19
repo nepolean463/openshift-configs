@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: route-2-passthrough
+  namespace: network-security-tls
+spec:
+  to:
+    kind: Service
+    name: secure-app-svc
+  port:
+    targetPort: 8443
+  tls:
+    termination: passthrough

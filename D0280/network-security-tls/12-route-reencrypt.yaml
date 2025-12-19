@@ -1,0 +1,17 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: route-3-reencrypt
+  namespace: network-security-tls
+spec:
+  to:
+    kind: Service
+    name: secure-app-svc
+  port:
+    targetPort: 8443
+  tls:
+    termination: reencrypt
+    # Security: In production, you must supply the CA cert that signed the pod's cert.
+    # OpenShift internal CA is often trusted by default, but explicit is better.
+    # destinationCACertificate: ...
+    insecureEdgeTerminationPolicy: Redirect
