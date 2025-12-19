@@ -27,3 +27,18 @@ subjects:
 - kind: User
   name: developer
   apiGroup: rbac.authorization.k8s.io
+---
+# Grant admin access to developer in test2
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: developer-admin-binding
+  namespace: network-ingress-test3
+rolRef:
+  apiGroup:
+    apiGroup: ClusterRole
+    name: admin
+subjects:
+- kind: User
+  name: developer
+  apiGroup: rbac.authorization.k8s.io
