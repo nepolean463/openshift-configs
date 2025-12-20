@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: exoplanets
+  labels:
+    app: exoplanets
+data:
+  app.mode: "production"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: exoplanets
+  labels:
+    app: exoplanets
+type: Opaque
+stringData:
+  api.key: "1234-abcde"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exoplanets
+  labels:
+    app: exoplanets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: exoplanets
+  template:
+    metadata:
+      labels:
+        app: exoplanets
+    spec:
+      containers:
+      - name: exoplanets
+        image: quay.io.redhattraining/exoplanets:v1.0
+        ports:
+        - containerPort: 8080
+        envForm:
+        - configMapRef:
+            name: exoplanets
+        - secretRef:
+            name: exoplanets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: exoplanets
+  labels:
+    app: exoplanets
+spec:
+  selector:
+    app: exoplanets
+  ports:
+  - port: 8080
+    targetPort: 8080
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: exoplanets
+  labels: 
+  app: exoplanets
+spec: 
+  to:
+    kind: Service
+    name: exoplanets
+  port:
+    targetPort: 8080
