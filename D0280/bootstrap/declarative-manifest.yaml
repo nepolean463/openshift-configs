@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: declarative-manifest        # FIXED: Typo removed (was declrative)
+  namespace: openshift-gitops       # The App object must live here
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/nepolean463/openshift-configs.git
+    targetRevision: main
+    path: D0280/declarative-manifest
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: declarative-manifest
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
