@@ -63,7 +63,8 @@ metadata:
   name: exoplanets
   labels: 
   app: exoplanets
-spec: 
+spec:
+  host: exoplanets.apps.ocp4.example.com # added custom hostname 
   to:
     kind: Service
     name: exoplanets
