@@ -14,9 +14,9 @@ metadata:
   name: database
   labels:
     app: database
-type: Opaque
+type: Opague
 stringData:
-  POSTGRES_USER: "admin"
+  db.user: "admin"
   POSTGRES_PASSWORD: "admin123"
 ---
 apiVersion: apps/v1
@@ -37,14 +37,14 @@ spec:
     spec:
       containers:
       - name: database
-        image: quay.io/redhattraining/mariadb:10.5
+        image: quay.io/redhattraining/postgres:10
         ports:
         - containerPort: 5432
-        envFrom:
-        - configMapRef:
-            name: database
-        - secretRef:
-            name: database
+          envFrom:
+          - configMapRef:
+              name: database
+          - secretRef:
+              name: database
 ---
 apiVersion: v1
 kind: Service

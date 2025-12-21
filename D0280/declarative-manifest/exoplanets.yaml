@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: exoplanets
-        image: quay.io.redhattraining/exoplanets:v1.0
+        image: quay.io/redhattraining/exoplanets:v1.0
         ports:
         - containerPort: 8080
         envForm:
