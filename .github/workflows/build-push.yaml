@@ -1,0 +1,33 @@
+name: Build and Push Image
+
+on:
+  push:
+    paths:
+      - 'D0280/src-app/**'      # Trigger only if files in your app folder change
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Image with Podman
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: networking-lab
+          tags: v2 ${{ github.sha }}
+          # IMPORTANT: Pointing to where your Dockerfile actually lives
+          containerfiles: |
+            ./D0280/src-app/Dockerfile
+          context: ./D0280/src-app
+
+      - name: Push to Quay.io
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: networking-lab
+          tags: v2 ${{ github.sha }}
+          registry: quay.io/nepoleansalam
+          # These read the secrets you need to set in GitHub Settings
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
