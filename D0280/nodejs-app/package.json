@@ -1,0 +1,9 @@
+{
+  "name": "D0280-nodejs-app",
+  "version": "1.0.0",
+  "description": "DO280 Node.js app for automated builds",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  }
+}
