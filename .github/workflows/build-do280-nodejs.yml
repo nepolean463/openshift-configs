@@ -3,7 +3,7 @@ on:
   push:
     branches: [ main, master ]
     paths:
-      - 'DO280/nodejs-app/**'
+      - 'D0280/nodejs-app/**'
   workflow_dispatch:
 jobs:
   build-push:
