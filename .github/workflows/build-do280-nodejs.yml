@@ -1,0 +1,37 @@
+name: Build DO280 Node.js Image
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      - 'DO280/nodejs-app/**'
+  workflow_dispatch:
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Login to Quay.io
+      uses: docker/login-action@v2
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+    
+    - name: Build and push DO280 Node.js image
+      uses: docker/build-push-action@v4
+      with:
+        context: ./DO280/nodejs-app
+        push: true
+        tags: |
+          quay.io/nepolean463/do280-nodejs:latest
+          quay.io/nepolean463/do280-nodejs:${{ github.sha }}
+        labels: |
+          org.opencontainers.image.source=https://github.com/nepolean463/openshift-configs
+          org.opencontainers.image.description=DO280 Node.js application
+    - name: Image Info
+      run: |
+        echo "✅ Image pushed to quay.io/nepolean463/do280-nodejs:latest"
+        echo "✅ Also tagged with commit: ${{ github.sha }}"
