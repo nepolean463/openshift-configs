@@ -1,4 +1,4 @@
-name: Build DO280 Node.js Image
+name: Build D0280 Node.js Image
 on:
   push:
     branches: [ main, master ]
@@ -20,17 +20,17 @@ jobs:
         username: ${{ secrets.QUAY_USERNAME }}
         password: ${{ secrets.QUAY_PASSWORD }}
     
-    - name: Build and push DO280 Node.js image
+    - name: Build and push D0280 Node.js image
       uses: docker/build-push-action@v4
       with:
-        context: ./DO280/nodejs-app
+        context: ./D0280/nodejs-app
         push: true
         tags: |
           quay.io/nepolean463/do280-nodejs:latest
           quay.io/nepolean463/do280-nodejs:${{ github.sha }}
         labels: |
           org.opencontainers.image.source=https://github.com/nepolean463/openshift-configs
-          org.opencontainers.image.description=DO280 Node.js application
+          org.opencontainers.image.description=D0280 Node.js application
     - name: Image Info
       run: |
         echo "✅ Image pushed to quay.io/nepolean463/do280-nodejs:latest"

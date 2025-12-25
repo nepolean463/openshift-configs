@@ -1,0 +1,32 @@
+name: Build Net-Tool Image              # <-- 1. Change Name
+
+on:
+  push:
+    paths:
+      - 'net-tool/**'                   # <-- 2. Change Trigger Path
+                                        # (Only runs when you touch the net-tool folder)
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Image with Podman
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: net-tool               # <-- 3. Change Image Name
+          tags: v1 ${{ github.sha }}
+          containerfiles: |
+            ./net-tool/Dockerfile       # <-- 4. Change Dockerfile Path
+          context: ./net-tool           # <-- 5. Change Context Path
+
+      - name: Push to Quay.io
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: net-tool               # <-- 6. Change Image Name
+          tags: v1 ${{ github.sha }}
+          registry: quay.io/nepoleansalam
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
