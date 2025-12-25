@@ -1,0 +1,16 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: frontend-route
+  namespace: ecommerce-prod
+spec:
+  host: ecommerce.apps.ocp4.example.com
+  to:
+    kind: Service
+    name: frontend
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
