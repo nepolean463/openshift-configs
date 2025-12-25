@@ -1,0 +1,59 @@
+name: Deploy Exercise
+
+on:
+  workflow_dispatch:
+    inputs:
+      exercise:
+        description: 'Exercise folder name in D0280/'
+        required: true
+        type: string
+      namespace:
+        description: 'Namespace (optional, defaults to exercise name)'
+        required: false
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install oc CLI
+      run: |
+        wget -q https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
+        tar -xzf openshift-client-linux.tar.gz
+        sudo mv oc /usr/local/bin/
+    
+    - name: Login to OpenShift
+      run: |
+        oc login --token=${{ secrets.OPENSHIFT_TOKEN }} \
+                 --server=https://api.ocp4.example.com:6443
+    
+    - name: Set namespace
+      id: ns
+      run: |
+        if [ -n "${{ inputs.namespace }}" ]; then
+          echo "namespace=${{ inputs.namespace }}" >> $GITHUB_OUTPUT
+        else
+          echo "namespace=${{ inputs.exercise }}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Deploy exercise
+      run: |
+        NAMESPACE=${{ steps.ns.outputs.namespace }}
+        MANIFESTS_DIR="D0280/${{ inputs.exercise }}/manifests"
+        
+        echo "📁 Looking for manifests in: $MANIFESTS_DIR"
+        
+        if [ ! -d "$MANIFESTS_DIR" ]; then
+          echo "❌ Error: Directory $MANIFESTS_DIR not found"
+          exit 1
+        fi
+        
+        echo "🚀 Deploying to namespace: $NAMESPACE"
+        oc get namespace $NAMESPACE || oc create namespace $NAMESPACE
+        
+        oc apply -f $MANIFESTS_DIR/ -n $NAMESPACE
+        
+        echo "✅ Deployment complete!"
+        oc get all -n $NAMESPACE

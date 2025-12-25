@@ -1,0 +1,52 @@
+name: Build All Images
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'D0280/*/Dockerfile'
+      - 'D0280/*/app.js'
+      - 'net-tool/Dockerfile'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - context: ./D0280/nodejs-app
+            image: do280-nodejs
+          - context: ./net-tool
+            image: net-tool
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Check if Dockerfile exists
+      id: check
+      run: |
+        if [ -f "${{ matrix.context }}/Dockerfile" ]; then
+          echo "exists=true" >> $GITHUB_OUTPUT
+        else
+          echo "exists=false" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Login to Quay.io
+      if: steps.check.outputs.exists == 'true'
+      uses: docker/login-action@v2
+      with:
+        registry: quay.io
+        username: ${{ secrets.QUAY_USERNAME }}
+        password: ${{ secrets.QUAY_PASSWORD }}
+    
+    - name: Build and push
+      if: steps.check.outputs.exists == 'true'
+      uses: docker/build-push-action@v4
+      with:
+        context: ${{ matrix.context }}
+        push: true
+        tags: |
+          quay.io/nepolean463/${{ matrix.image }}:latest
+          quay.io/nepolean463/${{ matrix.image }}:${{ github.sha }}

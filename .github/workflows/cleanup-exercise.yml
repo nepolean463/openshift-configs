@@ -1,0 +1,44 @@
+name: Cleanup Exercise
+
+on:
+  workflow_dispatch:
+    inputs:
+      namespace:
+        description: 'Namespace to delete (or "all" for all exercise-* namespaces)'
+        required: true
+        type: string
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install oc CLI
+      run: |
+        wget -q https://mirror.openshift.com/pub/openshift-v4/clients/ocp/stable/openshift-client-linux.tar.gz
+        tar -xzf openshift-client-linux.tar.gz
+        sudo mv oc /usr/local/bin/
+    
+    - name: Login to OpenShift
+      run: |
+        oc login --token=${{ secrets.OPENSHIFT_TOKEN }} \
+                 --server=https://api.ocp4.example.com:6443
+    
+    - name: Cleanup namespace
+      run: |
+        if [ "${{ inputs.namespace }}" == "all" ]; then
+          echo "🧹 Cleaning up ALL exercise namespaces..."
+          for ns in $(oc get namespaces -o name | grep -E 'namespace/(exercise-|ecommerce-)'); do
+            NAMESPACE=$(echo $ns | cut -d'/' -f2)
+            echo "Deleting: $NAMESPACE"
+            oc delete namespace $NAMESPACE --wait=false
+          done
+          echo "✅ All exercise namespaces deletion initiated"
+        else
+          echo "🧹 Cleaning up namespace: ${{ inputs.namespace }}"
+          if oc get namespace ${{ inputs.namespace }} 2>/dev/null; then
+            oc delete namespace ${{ inputs.namespace }}
+            echo "✅ Namespace ${{ inputs.namespace }} deleted"
+          else
+            echo "⚠️ Namespace ${{ inputs.namespace }} not found"
+          fi
+        fi
